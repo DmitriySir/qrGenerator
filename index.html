@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Генератор QR-кода</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .inputs {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        input {
+            width: 80px;
+            padding: 8px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+        }
+        .buttons {
+            margin: 15px 0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        #generateBtn {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #generateBtn:hover {
+            background-color: #45a049;
+        }
+        #printBtn {
+            background-color: #2196F3;
+            color: white;
+        }
+        #printBtn:hover {
+            background-color: #0b7dda;
+        }
+
+        .result-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 20px;
+            align-items: flex-start;
+        }
+        #qrcode {
+            text-align: center;
+        }
+       #generatedText {
+    font-size: 38px;
+    padding: 10px;
+   
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 200px;
+    white-space: pre;       
+    text-align: center;
+    font-family: monospace; 
+}
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+    
+        @media print {
+            .inputs, .buttons, h2 {
+                display: none !important;
+            }
+            body {
+                padding: 0;
+                max-width: none;
+                margin: 0;
+            }
+            .result-container {
+                gap: 20px;
+                justify-content: center;
+            }
+            #generatedText {
+    font-size: 38px;
+    padding: 10px;
+  
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    min-width: 200px;
+    white-space: pre;
+    text-align: center;
+    font-family: monospace;
+}
+        }
+    </style>
+</head>
+<body>
+    <h2>Генератор QR-кода</h2>
+    
+    <div class = "inputs">
+        <div class="input-group">
+            <label>Площадка</label>
+            <input type="number" id="num1" min="0" max="99" value="1">
+        </div>
+        <div class="input-group">
+            <label>Ряд</label>
+            <input type="number" id="num2" min="0" max="99" value="7">
+        </div>
+        <div class="input-group">
+            <label>Уровень</label>
+            <input type="number" id="num3" min="0" max="99" value="10">
+        </div>
+        <div class="input-group">
+            <label>Место</label>
+            <input type="number" id="num4" min="0" max="99" value="6">
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button id="generateBtn">Вперёд</button>
+        <button id="printBtn" onclick="window.print()">Печать</button>
+    </div>
+
+    <div class="result-container">
+        <div id="qrcode"></div>
+        <div id="generatedText">Сгенерировано: —</div>
+    </div>
+
+    <script>
+        const generateBtn = document.getElementById('generateBtn');
+        const qrcodeContainer = document.getElementById('qrcode');
+        const generatedText = document.getElementById('generatedText');
+
+        function generateQR() {
+            const n1 = document.getElementById('num1').value.trim();
+            const n2 = document.getElementById('num2').value.trim();
+            const n3 = document.getElementById('num3').value.trim();
+            const n4 = document.getElementById('num4').value.trim();
+
+            const nums = [n1, n2, n3, n4];
+            for (let num of nums) {
+                if (num === '' || isNaN(num) || num < 0 || num > 99 || !Number.isInteger(Number(num))) {
+                    alert('Пожалуйста, введите целые числа от 0 до 99.');
+                    return;
+                }
+            }
+
+            
+            const digits = `42*${n1}*${n2}*${n3}*${n4}`;
+            
+            
+            qrcodeContainer.innerHTML = '';
+            
+           
+            new QRCode(qrcodeContainer, {
+                text: digits,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+          
+           generatedText.textContent = `${n1}\n${n2}\n${n3}\n${n4}`;
+        }
+
+        generateBtn.addEventListener('click', generateQR);
+    </script>
+</body>
+</html>
